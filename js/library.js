@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+function updateLibraryProgress() {
 
     document.querySelectorAll(".book").forEach(book => {
 
@@ -46,4 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-});
+}
+
+document.addEventListener("DOMContentLoaded", updateLibraryProgress);
+
+window.addEventListener("pageshow", updateLibraryProgress);
