@@ -1,9 +1,23 @@
 /* CSS generated */
+@font-face {
+
+    font-family: "Literata";
+
+    src: url("../fonts/Literata-VariableFont_opsz,wght.woff2") format("woff2");
+
+    font-weight: 300 900;
+
+    font-style: normal;
+
+    font-display: swap;
+
+}
+
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:"Literata",Georgia,serif;background:#f8f8f6;color:#333;line-height:1.7}
-header,main,footer{width:100%;max-width:420px;margin:auto;padding:20px}
+header,main,footer{width:100%;max-width:600px;margin:auto;padding:20px}
 header{text-align:center;padding:35px 20px}
 header h1{font-size:32px;margin-bottom:15px;color:#2d665d}
 header p{font-size:15px;color:#666}

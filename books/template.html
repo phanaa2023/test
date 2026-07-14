@@ -7,19 +7,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tên Ebook</title>
+    <title>Những câu chuyện Phật pháp nhiệm màu</title>
+	<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
+<link rel="shortcut icon" href="/favicon/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/favicon/manifest.json">
 
     <link rel="stylesheet" href="../css/reader.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+ 
 </head>
 
-<body>
+<body data-book="cau-chuyen">
 
 <!-- ==================================================
      OVERLAY
@@ -37,7 +37,6 @@
 
         <h2>📚 Mục lục</h2>
 
-        <button id="closeDrawer">✕</button>
 
     </div>
 
@@ -69,11 +68,31 @@
 
 <header class="topbar">
 
-    <a href="../index.html">← Thư viện</a>
+    <a href="../index.html">← Thư viện Ebook</a>
 
     <button id="menuButton">☰</button>
 
 </header>
+
+<!-- ==================================================
+     FLOATING PROGRESS
+================================================== -->
+
+<div id="floatingProgress" class="floating-progress">
+
+    <div class="progress-track">
+
+        <div id="progressBar" class="progress-bar"></div>
+
+    </div>
+
+    <div class="progress-text">
+
+        Đã đọc <span id="readingPercent">0%</span>
+
+    </div>
+
+</div>
 
 <!-- ==================================================
      KHUNG ĐỌC
@@ -81,25 +100,15 @@
 
 <main class="reader">
 
-    <h1>Tên Ebook</h1>
+    <h1>Những câu chuyện Phật pháp nhiệm màu</h1>
+	
+	<figure class="book-cover">
 
-    <div class="reading-progress">
+    <img
+        src="../images/covers/nhung-cau-chuyen-phat-phap-nhiem-mau.webp"
+        alt="Bìa sách Những câu chuyện Phật pháp nhiệm màu">
 
-        <div class="progress-track">
-
-            <div id="progressBar" class="progress-bar"></div>
-
-        </div>
-
-        <p>
-
-            Đã đọc
-
-            <span id="readingPercent">0%</span>
-
-        </p>
-
-    </div>
+</figure>
 
     <!-- ==================================================
          NỘI DUNG
@@ -107,81 +116,7 @@
 
     <article id="articleContent">
 
-        <section id="loi-noi-dau">
 
-            <h2>Lời nói đầu</h2>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-
-            <p>
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-            </p>
-
-        </section>
-
-        <section id="chuong-1">
-
-            <h2>Chương 1</h2>
-
-            <blockquote>
-
-                Đây là đoạn trích dẫn mẫu.
-
-            </blockquote>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Pellentesque habitant morbi tristique senectus et netus.
-            </p>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-
-        </section>
-
-        <section id="chuong-2">
-
-            <h2>Chương 2</h2>
-
-            <figure>
-
-                <img src="../images/demo.jpg" alt="Ảnh minh họa">
-
-                <figcaption>
-
-                    Chú thích ảnh
-
-                </figcaption>
-
-            </figure>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-
-        </section>
-
-        <section id="ket-luan">
-
-            <h2>Kết luận</h2>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-
-        </section>
 
     </article>
 

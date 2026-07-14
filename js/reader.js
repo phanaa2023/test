@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
        Font Size
     ====================== */
 
-    let fontSize = Number(localStorage.getItem("fontSize")) || 18;
+    let fontSize = Number(localStorage.getItem("fontSize")) || 20;
 
     function updateFont() {
 
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fontUp?.addEventListener("click", () => {
 
-        if (fontSize < 24) {
+        if (fontSize < 26) {
 
             fontSize++;
 
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fontDown?.addEventListener("click", () => {
 
-        if (fontSize > 14) {
+        if (fontSize > 16) {
 
             fontSize--;
 
@@ -144,23 +144,41 @@ document.addEventListener("DOMContentLoaded", () => {
        Save
     ====================== */
 
-    function savePosition() {
+function savePosition() {
 
-        localStorage.setItem(
-            bookId + "_position",
-            window.scrollY
-        );
+    let percent = getPercent();
 
-        localStorage.setItem(
-            bookId + "_percent",
-            getPercent()
-        );
-
+    if (percent >= 98) {
+        percent = 100;
     }
+
+    localStorage.setItem(
+        bookId + "_position",
+        window.scrollY
+    );
+
+    localStorage.setItem(
+        bookId + "_percent",
+        percent
+    );
+
+}
 
     /* ======================
        Restore
     ====================== */
+
+const restart = localStorage.getItem(
+    bookId + "_restart"
+);
+
+if (restart) {
+
+    localStorage.removeItem(bookId + "_restart");
+
+    window.scrollTo(0, 0);
+
+} else {
 
     const saved = localStorage.getItem(
         bookId + "_position"
@@ -171,6 +189,8 @@ document.addEventListener("DOMContentLoaded", () => {
         window.scrollTo(0, Number(saved));
 
     }
+
+}
 
 	updateProgress();
 
