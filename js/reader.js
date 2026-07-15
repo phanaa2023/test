@@ -50,22 +50,34 @@ document.addEventListener("DOMContentLoaded", () => {
        Auto TOC
     ====================== */
 
-    article?.querySelectorAll("section[id]").forEach(section => {
+const sections = article?.querySelectorAll("section[id]") || [];
 
-        const title = section.querySelector("h2");
+sections.forEach(section => {
 
-        if (!title) return;
+    const title = section.querySelector("h2");
+    if (!title) return;
 
-        const a = document.createElement("a");
+    const a = document.createElement("a");
 
-        a.href = "#" + section.id;
-        a.textContent = title.textContent;
+    a.href = "#" + section.id;
+    a.textContent = title.textContent;
 
-        a.addEventListener("click", closeMenu);
+    a.addEventListener("click", (e) => {
 
-        tocList?.appendChild(a);
+        e.preventDefault();
+
+        closeMenu();
+
+section.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+});
 
     });
+
+    tocList?.appendChild(a);
+
+});
 
     /* ======================
        Font Size
@@ -75,11 +87,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateFont() {
 
+    if (article) {
         article.style.fontSize = fontSize + "px";
-
-        localStorage.setItem("fontSize", fontSize);
-
     }
+
+    localStorage.setItem("fontSize", fontSize);
+
+}
 
     updateFont();
 
