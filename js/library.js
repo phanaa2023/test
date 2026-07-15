@@ -61,3 +61,47 @@ function updateLibraryProgress() {
 document.addEventListener("DOMContentLoaded", updateLibraryProgress);
 
 window.addEventListener("pageshow", updateLibraryProgress);
+
+/* ==================================================
+   Service Worker
+================================================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    if (!("serviceWorker" in navigator)) return;
+
+    try {
+
+        const registration = await navigator.serviceWorker.register("/service-worker.js");
+
+        await navigator.serviceWorker.ready;
+
+        const books = new Set();
+
+        document.querySelectorAll('a[href^="books/"], a[href^="/books/"]').forEach(link => {
+
+            books.add(new URL(link.href).pathname);
+
+        });
+
+        const sw = navigator.serviceWorker.controller || registration.active;
+
+        if (sw) {
+
+            sw.postMessage({
+
+                type: "CACHE_BOOKS",
+
+                books: [...books]
+
+            });
+
+        }
+
+    } catch (error) {
+
+        console.error("Service Worker:", error);
+
+    }
+
+});
