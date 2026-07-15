@@ -243,6 +243,25 @@
         </a>
     </p>
 
+
+<!-- =====================================
+     CÀI ỨNG DỤNG
+===================================== -->
+
+<section class="install-app" id="installSection">
+
+    <h2>📱 Cài ứng dụng</h2>
+
+    <p>
+        Lưu <strong>Một Góc Phật Pháp</strong> ra màn hình chính để mở nhanh như
+        một ứng dụng và tiếp tục đọc ebook ngay cả khi không có mạng.
+    </p>
+
+    <button id="installButton" class="install-button">
+        📱 Thêm vào màn hình chính
+    </button>
+
+</section>
     <br>
 
     <p>
@@ -252,8 +271,35 @@
     <p>
         Chia sẻ ebook Phật pháp miễn phí.
     </p>
-
 </footer>
+<!-- =====================================
+     POPUP CÀI ỨNG DỤNG
+===================================== -->
+
+<div id="installOverlay" class="popup-overlay">
+
+    <div id="installPopup" class="popup">
+
+        <button
+            id="closeInstallPopup"
+            class="popup-close"
+            aria-label="Đóng">
+            ✕
+        </button>
+
+        <h2 id="popupTitle">
+            📱 Cài ứng dụng
+        </h2>
+
+        <div id="popupContent">
+
+            <!-- JS sẽ tự thay nội dung -->
+
+        </div>
+
+    </div>
+
+</div>
 
 <script src="js/library.js"></script>
 
