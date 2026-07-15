@@ -31,7 +31,7 @@ function updateLibraryProgress() {
             if (percent <= 0) {
 
     button.onclick = null;
-    button.textContent = "Bắt đầu đọc";
+    button.textContent = "Đọc ebook";
 
 } else if (percent >= 100) {
 
