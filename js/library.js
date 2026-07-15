@@ -147,93 +147,68 @@ if (isStandalone && installSection) {
 
 /* Mở popup */
 
+/* Mở popup */
 installButton?.addEventListener("click", () => {
-
-    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    // Cách nhận diện iOS/iPadOS chính xác nhất hiện nay
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
     if (isIOS) {
-
         popupTitle.textContent = "📱 Thêm vào màn hình chính";
-
         popupContent.innerHTML = `
             <p>
                 Để cài <strong>Một Góc Phật Pháp</strong> vào màn hình chính:
             </p>
-
-            <ol>
-                <li>Nhấn nút <strong>Chia sẻ</strong> (□↑) trên Safari.</li>
-                <li>Chọn <strong>"Thêm vào Màn hình chính"</strong>.</li>
-                <li>Nhấn <strong>"Thêm"</strong> để hoàn tất.</li>
+            <ol style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                <li style="margin-bottom: 8px;">Nhấn nút <strong>Chia sẻ</strong> (biểu tượng <span style="font-size: 18px;">⎋</span> hoặc hình vuông có mũi tên chỉ lên) trên thanh công cụ của Safari.</li>
+                <li style="margin-bottom: 8px;">Cuộn xuống dưới và chọn <strong>"Thêm vào Màn hình chính"</strong> (Add to Home Screen).</li>
+                <li>Nhấn <strong>"Thêm"</strong> (Add) ở góc trên bên phải để hoàn tất.</li>
             </ol>
-
             <p class="popup-note">
                 Sau khi thêm, website sẽ mở như một ứng dụng và có thể đọc ebook ngay cả khi không có mạng.
             </p>
         `;
-
     } else if (deferredPrompt) {
-
         popupTitle.textContent = "📱 Cài ứng dụng";
-
         popupContent.innerHTML = `
             <p>
                 Bạn có thể cài <strong>Một Góc Phật Pháp</strong> vào màn hình chính để mở nhanh như một ứng dụng.
             </p>
-
             <div class="popup-actions">
                 <button id="confirmInstall">
                     Cài đặt
                 </button>
             </div>
-
             <p class="popup-note">
                 Chỉ mất vài giây để hoàn tất.
             </p>
         `;
 
-        document
-    .getElementById("confirmInstall")
-    ?.addEventListener("click", async () => {
-
-        if (!deferredPrompt) return;
-
-deferredPrompt.prompt();
-
-const { outcome } = await deferredPrompt.userChoice;
-
-// Event này chỉ dùng được một lần
-deferredPrompt = null;
-
-if (outcome === "accepted") {
-
-    installSection?.style.display = "none";
-
-}
-
-        closeInstall();
-
-    });
-
+        document.getElementById("confirmInstall")?.addEventListener("click", async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            if (outcome === "accepted") {
+                installSection?.style.display = "none";
+            }
+            closeInstall();
+        });
     } else {
-
-        popupTitle.textContent = "📱 Chưa hỗ trợ";
-
+        popupTitle.textContent = "📱 Hướng dẫn cài đặt";
         popupContent.innerHTML = `
             <p>
-                Chưa thể hiển thị tùy chọn cài đặt.
+                Để cài ứng dụng này lên màn hình chính:
             </p>
-
-            <p class="popup-note">
-                Nếu đang dùng Android, hãy mở website bằng <strong>Google Chrome</strong> để cài đặt.
-            </p>
+            <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
+                <li style="margin-bottom: 8px;"><strong>Trên Android:</strong> Mở trang web bằng <strong>Google Chrome</strong>, nhấn vào biểu tượng 3 chấm ở góc trên và chọn <strong>"Cài đặt ứng dụng"</strong> hoặc <strong>"Thêm vào màn hình chính"</strong>.</li>
+                <li><strong>Trên iPhone:</strong> Hãy chắc chắn rằng bạn đang mở trang web bằng trình duyệt <strong>Safari</strong> gốc để thực hiện cài đặt.</li>
+            </ul>
         `;
-
     }
 
     installOverlay.classList.add("show");
-
 });
-
 /* Đóng popup */
 
 function closeInstall() {
