@@ -149,3 +149,113 @@ if (shareButton) {
     });
 
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const installSection = document.getElementById("installSection");
+
+    const guideButton = document.getElementById("guideButton");
+
+    const guideOverlay = document.getElementById("guideOverlay");
+
+    const closeGuide = document.getElementById("closeGuide");
+
+    const guideTitle = document.getElementById("guideTitle");
+
+    const guideContent = document.getElementById("guideContent");
+
+    if (
+        !installSection ||
+        !guideButton ||
+        !guideOverlay
+    ) return;
+
+    // Chỉ hiện trên điện thoại
+
+    const ua = navigator.userAgent.toLowerCase();
+
+const isAndroid = ua.includes("android");
+
+const isIOS =
+    /iphone|ipad|ipod/.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    if (!isAndroid && !isIOS) {
+
+        installSection.style.display = "yes";
+
+        return;
+
+    }
+
+    guideButton.addEventListener("click", () => {
+
+        if (isAndroid) {
+
+            guideTitle.textContent =
+                "Android";
+
+            guideContent.innerHTML = `
+
+<ol>
+
+<li>Mở <strong style="color:#34A853;">Trang chủ</strong> bằng <strong style="color:#34A853;">Google Chrome</strong>.</li>
+
+<li>Nhấn nút <strong>⋮</strong></li>
+
+<li>Chọn <strong>Thêm vào màn hình chính</strong> hoặc <strong>Cài đặt ứng dụng</strong>.</li>
+
+<li>Nhấn <strong>Thêm</strong> hoặc <strong>Cài đặt</strong>.</li>
+
+<li>Nếu muốn, đổi tên thành <strong>Phật Pháp</strong>.</li>
+
+</ol>
+
+`;
+
+        } else {
+
+            guideTitle.textContent =
+                "iPhone";
+
+            guideContent.innerHTML = `
+
+<ol>
+
+<li>Mở <strong style="color:#0A84FF;">Trang chủ</strong> bằng <strong style="color:#0A84FF;">Safari</strong>.</li>
+
+<li>Nhấn nút <strong>Chia sẻ</strong> (hình vuông có mũi tên hướng lên ở giữa).</li>
+
+<li>Chọn <strong>Thêm vào Màn hình chính</strong>.</li>
+
+<li>Nếu cần, đổi tên thành <strong>Phật Pháp</strong>.</li>
+
+<li>Nhấn <strong>Thêm</strong>.</li>
+
+</ol>
+
+`;
+
+        }
+
+        guideOverlay.classList.add("show");
+
+    });
+
+    closeGuide.addEventListener("click", () => {
+
+        guideOverlay.classList.remove("show");
+
+    });
+
+    guideOverlay.addEventListener("click", (e) => {
+
+        if (e.target === guideOverlay) {
+
+            guideOverlay.classList.remove("show");
+
+        }
+
+    });
+
+});

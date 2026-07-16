@@ -33,15 +33,9 @@
 <div class="intro">
     <p>
         Chia sẻ những <strong>ebook Phật pháp miễn phí</strong>,
-        giúp ứng dụng lời Phật dạy vào cuộc sống hằng ngày.
+        Có thể tăng giảm kích thước chữ cho dễ đọc khi mở ebook.
     </p>
 
-    <div class="intro-tags">
-        <span>📖 Lưu vị trí đọc</span>
-        <span>🔤 Thay đổi cỡ chữ</span>
-        <span>📱 Dễ đọc trên điện thoại</span>
-        <span>📶 Đọc offline</span>
-    </div>
 </div>
 
 </header>
@@ -229,17 +223,7 @@
 
 <section class="share-section info-section">
 
-    <h2>Tiện ích</h2>
-	    <p>
-       Thêm website vào màn hình chính để mở nhanh như một ứng dụng, ngay cả khi không có mạng, nhấn vào nút bên dưới để xem hướng dẫn chi tiết.
-    </p>
-	
-<div class="install-button-wrapper">
-    <a href="books/huong-dan-cai-dat" class="btn-secondary">
-        📲 Thêm vào màn hình chính
-    </a>
-</div>
-<br>
+    <h2>Chia sẻ website</h2>
     <p>
         Nếu những ebook này hữu ích với bạn,
         hãy chia sẻ website để nhiều người cùng đọc.
@@ -265,7 +249,21 @@
 
 <footer>
 
+
     <hr>
+	<section class="install-app" id="installSection">
+
+    <h2>Lưu ra màn hình chính</h2>
+
+    <p>
+        📱 Thêm website vào màn hình chính để mở nhanh như một ứng dụng và đọc offline.
+    </p><br>
+
+    <button id="guideButton" class="install-button">
+    Hướng dẫn cài đặt
+</button>
+
+</section>
 
     <p><strong>Theo dõi Fanpage</strong></p>
 
@@ -285,6 +283,30 @@
         Chia sẻ ebook Phật pháp miễn phí.
     </p>
 </footer>
+<!-- =====================================
+     POPUP HƯỚNG DẪN
+===================================== -->
+
+<div id="guideOverlay" class="popup-overlay">
+
+    <div class="popup">
+
+        <button
+            id="closeGuide"
+            class="popup-close"
+            aria-label="Đóng">
+
+            ✕
+
+        </button>
+
+        <h2 id="guideTitle"></h2>
+
+        <div id="guideContent"></div>
+
+    </div>
+
+</div>
 
 <script src="js/library.js"></script>
 
