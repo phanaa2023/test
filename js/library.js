@@ -105,3 +105,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 });
+
+/* ==================================================
+   Chia sẻ website
+================================================== */
+
+const shareButton = document.getElementById("shareBtn");
+
+if (shareButton) {
+
+    shareButton.addEventListener("click", async () => {
+
+        const shareData = {
+            title: document.title,
+            text: "Những ebook Phật pháp miễn phí giúp ứng dụng lời Phật dạy vào cuộc sống hằng ngày.",
+            url: window.location.origin
+        };
+
+        // Trình duyệt hỗ trợ chia sẻ (Android, iPhone...)
+        if (navigator.share) {
+
+            try {
+                await navigator.share(shareData);
+            } catch (error) {
+                // Người dùng đóng cửa sổ chia sẻ
+            }
+
+            return;
+        }
+
+        // Trình duyệt không hỗ trợ -> Sao chép liên kết
+        try {
+
+            await navigator.clipboard.writeText(shareData.url);
+            alert("Đã sao chép liên kết website.");
+
+        } catch (error) {
+
+            alert("Không thể chia sẻ trên trình duyệt này.");
+
+        }
+
+    });
+
+}

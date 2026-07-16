@@ -28,7 +28,7 @@ section h2{font-size:22px;margin-bottom:18px;color:#2d665d}
 .book-right{flex:1;min-width:0}
 .book-right h3{font-size:20px;line-height:1.4;margin-bottom:10px;color:#222}
 .book-right p{font-size:17px;color:#555}
-section:last-child{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.info-section{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
 footer{text-align:center;color:#666;font-size:15px;padding-bottom:40px}
 footer hr{border:none;border-top:1px solid #ddd;margin-bottom:20px}
 footer a{color:#2d665d;text-decoration:none}
@@ -38,4 +38,136 @@ footer a:hover{text-decoration:underline}
     .book{gap:14px}
     .book-left{width:105px}
     .book-right h3{font-size:20px}
+}
+
+/* mở đầu*/
+.intro {
+    max-width: 600px;
+    margin: 18px auto 30px;
+    padding: 0 18px;
+    text-align: center;
+    color: #555;
+    line-height: 1.8;
+}
+
+.intro strong {
+    color: #348C90;
+}
+
+.intro-tags {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.intro-tags span {
+    background: #eef7f7;
+    color: #348C90;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+/* share*/
+.btn-share {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 10px 18px;
+
+    background: #348C90;
+    color: #fff;
+
+    border: none;
+    border-radius: 999px;
+
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: .25s;
+}
+
+.btn-share:hover {
+    background: #2d7b7e;
+    transform: translateY(-1px);
+}
+
+.btn-share:active {
+    transform: translateY(0);
+}
+
+.share-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.share-button-wrapper {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* hướng dẫn cài đặt*/
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 18px;
+
+    border: 1px solid #348C90;
+    border-radius: 999px;
+
+    background: transparent;
+    color: #348C90;
+
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+.btn-secondary:hover {
+    background: rgba(52, 140, 144, .08);
+}
+.install-button-wrapper {
+    text-align: center;
+    margin: 18px 0;
+}
+section ol {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+}
+
+section li {
+    margin-bottom: 0.75rem;
+}
+
+/* Nút quay về thư viện */
+.btn-back {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 8px;
+    background: #2d665d;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background .2s;
+}
+
+.btn-back:hover {
+    background: #224f49;
+    text-decoration: none;
 }
