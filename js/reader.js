@@ -216,6 +216,8 @@ window.addEventListener("scroll", () => {
     updateProgress();
 
     savePosition();
+	
+	updateStudyButton();
 
     if (!floatingProgress) return;
 
@@ -230,4 +232,57 @@ window.addEventListener("scroll", () => {
     }, 1200);
 
 });
+/* ======================
+   Study Mode
+====================== */
+
+const studyButton = document.getElementById("studyModeButton");
+const studyBlocks = document.querySelectorAll(".study-block");
+
+function updateStudyButton() {
+
+    if (!studyButton) return;
+
+    if (studyBlocks.length === 0) {
+
+        studyButton.style.display = "none";
+        return;
+
+    }
+
+    let visible = false;
+
+    for (const block of studyBlocks) {
+
+        const rect = block.getBoundingClientRect();
+
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+
+            visible = true;
+            break;
+
+        }
+
+    }
+
+    studyButton.classList.toggle("show", visible);
+
+}
+
+updateStudyButton();
+
+studyButton?.addEventListener("click", () => {
+
+    document.body.classList.toggle("study-mode");
+
+    const active =
+        document.body.classList.contains("study-mode");
+
+    studyButton.textContent = active
+        ? "Đọc thường"
+        : "Sơ đồ học thuộc";
+
+});
+
+
 });
