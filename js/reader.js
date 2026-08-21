@@ -236,53 +236,242 @@ window.addEventListener("scroll", () => {
    Study Mode
 ====================== */
 
-const studyButton = document.getElementById("studyModeButton");
-const studyBlocks = document.querySelectorAll(".study-block");
+const studyButton =
+    document.getElementById("studyModeButton");
+
+const studyBlocks =
+    document.querySelectorAll(".study-block");
+
+
+/* ======================
+   Tìm block đang đọc
+====================== */
+
+function getCurrentStudyBlock() {
+
+    const marker =
+        window.innerHeight * 0.35;
+
+    for (const block of studyBlocks) {
+
+        const rect =
+            block.getBoundingClientRect();
+
+        if (
+            rect.top <= marker &&
+            rect.bottom > marker
+        ) {
+            return block;
+        }
+
+    }
+
+    return null;
+}
+
+
+/* ======================
+   Chờ layout ổn định
+   rồi giữ nguyên block
+====================== */
+
+function keepStudyPosition(block, oldTop) {
+
+    if (
+        !block ||
+        oldTop === undefined
+    ) {
+        return;
+    }
+
+
+    /*
+       Chờ nhiều frame để:
+
+       TEXT → TABLE
+       hoặc
+       TABLE → TEXT
+
+       có đủ thời gian thay đổi
+       chiều cao và reflow layout.
+    */
+
+    let frame = 0;
+
+    const maxFrames = 6;
+
+
+    function adjust() {
+
+        const newTop =
+            block.getBoundingClientRect().top;
+
+
+        /*
+           Căn block hiện tại về đúng
+           vị trí cũ trên màn hình.
+        */
+
+        const difference =
+            newTop - oldTop;
+
+
+        if (Math.abs(difference) > 0.5) {
+
+            window.scrollBy(
+                0,
+                difference
+            );
+
+        }
+
+
+        frame++;
+
+
+        /*
+           Tiếp tục kiểm tra thêm vài frame.
+
+           Điều này quan trọng trên mobile
+           vì layout có thể tiếp tục thay đổi
+           sau lần reflow đầu tiên.
+        */
+
+        if (frame < maxFrames) {
+
+            requestAnimationFrame(adjust);
+
+        }
+
+    }
+
+
+    requestAnimationFrame(adjust);
+
+}
+
+
+/* ======================
+   Hiển thị nút Study Mode
+====================== */
 
 function updateStudyButton() {
 
     if (!studyButton) return;
 
+
     if (studyBlocks.length === 0) {
 
         studyButton.style.display = "none";
+
         return;
 
     }
 
+
     let visible = false;
+
 
     for (const block of studyBlocks) {
 
-        const rect = block.getBoundingClientRect();
+        const rect =
+            block.getBoundingClientRect();
 
-        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+
+        if (
+            rect.bottom > 0 &&
+            rect.top < window.innerHeight
+        ) {
 
             visible = true;
+
             break;
 
         }
 
     }
 
-    studyButton.classList.toggle("show", visible);
+
+    studyButton.classList.toggle(
+        "show",
+        visible
+    );
 
 }
 
+
 updateStudyButton();
 
-studyButton?.addEventListener("click", () => {
 
-    document.body.classList.toggle("study-mode");
+/* ======================
+   Chuyển TEXT ↔ TABLE
+====================== */
 
-    const active =
-        document.body.classList.contains("study-mode");
-
-    studyButton.textContent = active
-        ? "Đọc thường"
-        : "Sơ đồ học thuộc";
-
-});
+studyButton?.addEventListener(
+    "click",
+    () => {
 
 
-});
+        /* ======================
+           1. Xác định block hiện tại
+        ====================== */
+
+        const currentBlock =
+            getCurrentStudyBlock();
+
+
+        if (!currentBlock) return;
+
+
+        /* ======================
+           2. Ghi lại vị trí block
+        ====================== */
+
+        const oldTop =
+            currentBlock.getBoundingClientRect().top;
+
+
+        /* ======================
+           3. Đổi chế độ
+        ====================== */
+
+        document.body.classList.toggle(
+            "study-mode"
+        );
+
+
+        /* ======================
+           4. Đợi layout ổn định
+              rồi căn lại vị trí
+        ====================== */
+
+        keepStudyPosition(
+            currentBlock,
+            oldTop
+        );
+
+
+        /* ======================
+           5. Đổi tên nút
+        ====================== */
+
+        const active =
+            document.body.classList.contains(
+                "study-mode"
+            );
+
+
+        studyButton.textContent =
+            active
+                ? "Đọc thường"
+                : "Sơ đồ học thuộc";
+
+
+        /* ======================
+           6. Cập nhật trạng thái nút
+        ====================== */
+
+        updateStudyButton();
+
+    }
+);
