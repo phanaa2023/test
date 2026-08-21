@@ -34,6 +34,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const studyBlocks =
         document.querySelectorAll(".study-block");
 
+    // Quản lý Animation Frame chống trùng lặp cuộn khi click nhanh
+    let currentAdjustFrame = null;
+
+    /* ======================
+       Chống Double-Tap Zoom
+    ====================== */
+
+    studyButton?.addEventListener("dblclick", (e) => {
+        e.preventDefault();
+    });
+
+    let lastTouchTime = 0;
+    studyButton?.addEventListener("touchend", (e) => {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTouchTime;
+        if (tapLength < 300 && tapLength > 0) {
+            e.preventDefault();
+        }
+        lastTouchTime = currentTime;
+    });
+
 
     /* ======================
        Drawer
@@ -218,29 +239,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ======================
-       Tìm block đang đọc
+       Tìm block gần trung tâm nhất
     ====================== */
 
     function getCurrentStudyBlock() {
 
-        const marker =
-            window.innerHeight * 0.35;
+        if (studyBlocks.length === 0) return null;
+
+        const viewportCenter = window.innerHeight / 2;
+
+        let closestBlock = null;
+        let minDistance = Infinity;
 
         for (const block of studyBlocks) {
 
-            const rect =
-                block.getBoundingClientRect();
+            const rect = block.getBoundingClientRect();
+            
+            // Tính điểm trung tâm của block
+            const blockCenter = rect.top + (rect.height / 2);
 
-            if (
-                rect.top <= marker &&
-                rect.bottom > marker
-            ) {
-                return block;
+            // Khoảng cách tới trung tâm viewport
+            const distance = Math.abs(blockCenter - viewportCenter);
+
+            if (distance < minDistance) {
+
+                minDistance = distance;
+                closestBlock = block;
+
             }
 
         }
 
-        return null;
+        return closestBlock;
     }
 
 
@@ -258,17 +288,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-
-        /*
-           Chờ nhiều frame để:
-
-           TEXT → TABLE
-           hoặc
-           TABLE → TEXT
-
-           có đủ thời gian thay đổi
-           chiều cao và reflow layout.
-        */
+        // Hủy animation cũ nếu người dùng nhấn nút liên tục
+        if (currentAdjustFrame) {
+            cancelAnimationFrame(currentAdjustFrame);
+        }
 
         let frame = 0;
 
@@ -303,30 +326,27 @@ document.addEventListener("DOMContentLoaded", () => {
             frame++;
 
 
-            /*
-               Tiếp tục kiểm tra thêm vài frame.
-
-               Điều này quan trọng trên mobile
-               vì layout có thể tiếp tục thay đổi
-               sau lần reflow đầu tiên.
-            */
-
             if (frame < maxFrames) {
 
-                requestAnimationFrame(adjust);
+                currentAdjustFrame = requestAnimationFrame(adjust);
+
+            } else {
+
+                currentAdjustFrame = null;
 
             }
 
         }
 
 
-        requestAnimationFrame(adjust);
+        currentAdjustFrame = requestAnimationFrame(adjust);
 
     }
 
 
     /* ======================
        Hiển thị nút Study Mode
+       (Từ block đầu tiên cho tới hết trang)
     ====================== */
 
     function updateStudyButton() {
@@ -342,33 +362,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
+        // Lấy vị trí của block đầu tiên
+        const firstBlock = studyBlocks[0];
+        const rect = firstBlock.getBoundingClientRect();
 
-        let visible = false;
-
-
-        for (const block of studyBlocks) {
-
-            const rect =
-                block.getBoundingClientRect();
-
-
-            if (
-                rect.bottom > 0 &&
-                rect.top < window.innerHeight
-            ) {
-
-                visible = true;
-
-                break;
-
-            }
-
-        }
-
+        // Nút sẽ hiện khi vị trí mép trên của block đầu tiên chui vào viewport (nhỏ hơn height)
+        const isPastFirstBlock = rect.top <= window.innerHeight;
 
         studyButton.classList.toggle(
             "show",
-            visible
+            isPastFirstBlock
         );
 
     }
@@ -384,7 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             /* ======================
-               1. Xác định block hiện tại
+               1. Xác định block gần trung tâm nhất
             ====================== */
 
             const currentBlock =
@@ -457,14 +460,28 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStudyButton();
 
     let hideTimer;
+    let isTicking = false;
 
     window.addEventListener("scroll", () => {
 
-        updateProgress();
+        // Tối ưu hiệu năng scroll bằng requestAnimationFrame
+        if (!isTicking) {
 
-        savePosition();
+            window.requestAnimationFrame(() => {
 
-        updateStudyButton();
+                updateProgress();
+
+                savePosition();
+
+                updateStudyButton();
+
+                isTicking = false;
+
+            });
+
+            isTicking = true;
+
+        }
 
         if (!floatingProgress) return;
 
