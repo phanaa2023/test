@@ -3,7 +3,7 @@
        Service Worker v2
     ================================================== */
 
-    const CACHE_NAME = "mot-goc-phat-phap-v2.8";
+    const CACHE_NAME = "mot-goc-phat-phap-v2.8.1";
 
 /* ==================================================
    Cài đặt
