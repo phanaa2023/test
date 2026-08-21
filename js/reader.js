@@ -19,10 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const progressBar = document.getElementById("progressBar");
     const readingPercent = document.getElementById("readingPercent");
-	const floatingProgress = document.getElementById("floatingProgress");
-	const bookTitle = document.querySelector(".reader h1");
+    const floatingProgress = document.getElementById("floatingProgress");
+    const bookTitle = document.querySelector(".reader h1");
 
     const bookId = document.body.dataset.book || "ebook";
+
+    /* ======================
+       Study Mode Elements
+    ====================== */
+
+    const studyButton =
+        document.getElementById("studyModeButton");
+
+    const studyBlocks =
+        document.querySelectorAll(".study-block");
+
 
     /* ======================
        Drawer
@@ -50,34 +61,34 @@ document.addEventListener("DOMContentLoaded", () => {
        Auto TOC
     ====================== */
 
-const sections = article?.querySelectorAll("section[id]") || [];
+    const sections = article?.querySelectorAll("section[id]") || [];
 
-sections.forEach(section => {
+    sections.forEach(section => {
 
-    const title = section.querySelector("h2");
-    if (!title) return;
+        const title = section.querySelector("h2");
+        if (!title) return;
 
-    const a = document.createElement("a");
+        const a = document.createElement("a");
 
-    a.href = "#" + section.id;
-    a.textContent = title.textContent;
+        a.href = "#" + section.id;
+        a.textContent = title.textContent;
 
-    a.addEventListener("click", (e) => {
+        a.addEventListener("click", (e) => {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        closeMenu();
+            closeMenu();
 
-section.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-});
+            section.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+
+        tocList?.appendChild(a);
 
     });
-
-    tocList?.appendChild(a);
-
-});
 
     /* ======================
        Font Size
@@ -87,13 +98,13 @@ section.scrollIntoView({
 
     function updateFont() {
 
-    if (article) {
-        article.style.fontSize = fontSize + "px";
+        if (article) {
+            article.style.fontSize = fontSize + "px";
+        }
+
+        localStorage.setItem("fontSize", fontSize);
+
     }
-
-    localStorage.setItem("fontSize", fontSize);
-
-}
 
     updateFont();
 
@@ -158,320 +169,315 @@ section.scrollIntoView({
        Save
     ====================== */
 
-function savePosition() {
+    function savePosition() {
 
-    let percent = getPercent();
+        let percent = getPercent();
 
-    if (percent >= 98) {
-        percent = 100;
+        if (percent >= 98) {
+            percent = 100;
+        }
+
+        localStorage.setItem(
+            bookId + "_position",
+            window.scrollY
+        );
+
+        localStorage.setItem(
+            bookId + "_percent",
+            percent
+        );
+
     }
-
-    localStorage.setItem(
-        bookId + "_position",
-        window.scrollY
-    );
-
-    localStorage.setItem(
-        bookId + "_percent",
-        percent
-    );
-
-}
 
     /* ======================
        Restore
     ====================== */
 
-const restart = localStorage.getItem(
-    bookId + "_restart"
-);
-
-if (restart) {
-
-    localStorage.removeItem(bookId + "_restart");
-
-    window.scrollTo(0, 0);
-
-} else {
-
-    const saved = localStorage.getItem(
-        bookId + "_position"
+    const restart = localStorage.getItem(
+        bookId + "_restart"
     );
 
-    if (saved !== null) {
+    if (restart) {
 
-        window.scrollTo(0, Number(saved));
+        localStorage.removeItem(bookId + "_restart");
 
-    }
+        window.scrollTo(0, 0);
 
-}
+    } else {
 
-	updateProgress();
+        const saved = localStorage.getItem(
+            bookId + "_position"
+        );
 
+        if (saved !== null) {
 
-let hideTimer;
+            window.scrollTo(0, Number(saved));
 
-window.addEventListener("scroll", () => {
-
-    updateProgress();
-
-    savePosition();
-	
-	updateStudyButton();
-
-    if (!floatingProgress) return;
-
-    floatingProgress.classList.add("show");
-
-    clearTimeout(hideTimer);
-
-    hideTimer = setTimeout(() => {
-
-        floatingProgress.classList.remove("show");
-
-    }, 1200);
-
-});
-/* ======================
-   Study Mode
-====================== */
-
-const studyButton =
-    document.getElementById("studyModeButton");
-
-const studyBlocks =
-    document.querySelectorAll(".study-block");
-
-
-/* ======================
-   Tìm block đang đọc
-====================== */
-
-function getCurrentStudyBlock() {
-
-    const marker =
-        window.innerHeight * 0.35;
-
-    for (const block of studyBlocks) {
-
-        const rect =
-            block.getBoundingClientRect();
-
-        if (
-            rect.top <= marker &&
-            rect.bottom > marker
-        ) {
-            return block;
         }
 
     }
 
-    return null;
-}
+    /* ======================
+       Tìm block đang đọc
+    ====================== */
 
+    function getCurrentStudyBlock() {
 
-/* ======================
-   Chờ layout ổn định
-   rồi giữ nguyên block
-====================== */
+        const marker =
+            window.innerHeight * 0.35;
 
-function keepStudyPosition(block, oldTop) {
+        for (const block of studyBlocks) {
 
-    if (
-        !block ||
-        oldTop === undefined
-    ) {
-        return;
+            const rect =
+                block.getBoundingClientRect();
+
+            if (
+                rect.top <= marker &&
+                rect.bottom > marker
+            ) {
+                return block;
+            }
+
+        }
+
+        return null;
     }
 
 
-    /*
-       Chờ nhiều frame để:
+    /* ======================
+       Chờ layout ổn định
+       rồi giữ nguyên block
+    ====================== */
 
-       TEXT → TABLE
-       hoặc
-       TABLE → TEXT
+    function keepStudyPosition(block, oldTop) {
 
-       có đủ thời gian thay đổi
-       chiều cao và reflow layout.
-    */
-
-    let frame = 0;
-
-    const maxFrames = 6;
-
-
-    function adjust() {
-
-        const newTop =
-            block.getBoundingClientRect().top;
+        if (
+            !block ||
+            oldTop === undefined
+        ) {
+            return;
+        }
 
 
         /*
-           Căn block hiện tại về đúng
-           vị trí cũ trên màn hình.
+           Chờ nhiều frame để:
+
+           TEXT → TABLE
+           hoặc
+           TABLE → TEXT
+
+           có đủ thời gian thay đổi
+           chiều cao và reflow layout.
         */
 
-        const difference =
-            newTop - oldTop;
+        let frame = 0;
+
+        const maxFrames = 6;
 
 
-        if (Math.abs(difference) > 0.5) {
+        function adjust() {
 
-            window.scrollBy(
-                0,
-                difference
-            );
+            const newTop =
+                block.getBoundingClientRect().top;
+
+
+            /*
+               Căn block hiện tại về đúng
+               vị trí cũ trên màn hình.
+            */
+
+            const difference =
+                newTop - oldTop;
+
+
+            if (Math.abs(difference) > 0.5) {
+
+                window.scrollBy(
+                    0,
+                    difference
+                );
+
+            }
+
+
+            frame++;
+
+
+            /*
+               Tiếp tục kiểm tra thêm vài frame.
+
+               Điều này quan trọng trên mobile
+               vì layout có thể tiếp tục thay đổi
+               sau lần reflow đầu tiên.
+            */
+
+            if (frame < maxFrames) {
+
+                requestAnimationFrame(adjust);
+
+            }
 
         }
 
 
-        frame++;
-
-
-        /*
-           Tiếp tục kiểm tra thêm vài frame.
-
-           Điều này quan trọng trên mobile
-           vì layout có thể tiếp tục thay đổi
-           sau lần reflow đầu tiên.
-        */
-
-        if (frame < maxFrames) {
-
-            requestAnimationFrame(adjust);
-
-        }
+        requestAnimationFrame(adjust);
 
     }
 
 
-    requestAnimationFrame(adjust);
+    /* ======================
+       Hiển thị nút Study Mode
+    ====================== */
 
-}
+    function updateStudyButton() {
 
-
-/* ======================
-   Hiển thị nút Study Mode
-====================== */
-
-function updateStudyButton() {
-
-    if (!studyButton) return;
+        if (!studyButton) return;
 
 
-    if (studyBlocks.length === 0) {
+        if (studyBlocks.length === 0) {
 
-        studyButton.style.display = "none";
+            studyButton.style.display = "none";
 
-        return;
-
-    }
-
-
-    let visible = false;
-
-
-    for (const block of studyBlocks) {
-
-        const rect =
-            block.getBoundingClientRect();
-
-
-        if (
-            rect.bottom > 0 &&
-            rect.top < window.innerHeight
-        ) {
-
-            visible = true;
-
-            break;
+            return;
 
         }
 
-    }
+
+        let visible = false;
 
 
-    studyButton.classList.toggle(
-        "show",
-        visible
-    );
+        for (const block of studyBlocks) {
 
-}
+            const rect =
+                block.getBoundingClientRect();
 
 
-updateStudyButton();
+            if (
+                rect.bottom > 0 &&
+                rect.top < window.innerHeight
+            ) {
+
+                visible = true;
+
+                break;
+
+            }
+
+        }
 
 
-/* ======================
-   Chuyển TEXT ↔ TABLE
-====================== */
-
-studyButton?.addEventListener(
-    "click",
-    () => {
-
-
-        /* ======================
-           1. Xác định block hiện tại
-        ====================== */
-
-        const currentBlock =
-            getCurrentStudyBlock();
-
-
-        if (!currentBlock) return;
-
-
-        /* ======================
-           2. Ghi lại vị trí block
-        ====================== */
-
-        const oldTop =
-            currentBlock.getBoundingClientRect().top;
-
-
-        /* ======================
-           3. Đổi chế độ
-        ====================== */
-
-        document.body.classList.toggle(
-            "study-mode"
+        studyButton.classList.toggle(
+            "show",
+            visible
         );
 
-
-        /* ======================
-           4. Đợi layout ổn định
-              rồi căn lại vị trí
-        ====================== */
-
-        keepStudyPosition(
-            currentBlock,
-            oldTop
-        );
+    }
 
 
-        /* ======================
-           5. Đổi tên nút
-        ====================== */
+    /* ======================
+       Chuyển TEXT ↔ TABLE
+    ====================== */
 
-        const active =
-            document.body.classList.contains(
+    studyButton?.addEventListener(
+        "click",
+        () => {
+
+
+            /* ======================
+               1. Xác định block hiện tại
+            ====================== */
+
+            const currentBlock =
+                getCurrentStudyBlock();
+
+
+            if (!currentBlock) return;
+
+
+            /* ======================
+               2. Ghi lại vị trí block
+            ====================== */
+
+            const oldTop =
+                currentBlock.getBoundingClientRect().top;
+
+
+            /* ======================
+               3. Đổi chế độ
+            ====================== */
+
+            document.body.classList.toggle(
                 "study-mode"
             );
 
 
-        studyButton.textContent =
-            active
-                ? "Đọc thường"
-                : "Sơ đồ học thuộc";
+            /* ======================
+               4. Đợi layout ổn định
+                  rồi căn lại vị trí
+            ====================== */
+
+            keepStudyPosition(
+                currentBlock,
+                oldTop
+            );
 
 
-        /* ======================
-           6. Cập nhật trạng thái nút
-        ====================== */
+            /* ======================
+               5. Đổi tên nút
+            ====================== */
+
+            const active =
+                document.body.classList.contains(
+                    "study-mode"
+                );
+
+
+            studyButton.textContent =
+                active
+                    ? "Đọc thường"
+                    : "Sơ đồ học thuộc";
+
+
+            /* ======================
+               6. Cập nhật trạng thái nút
+            ====================== */
+
+            updateStudyButton();
+
+        }
+    );
+
+
+    /* ======================
+       Khởi tạo & Lắng nghe Scroll
+    ====================== */
+
+    updateProgress();
+
+    updateStudyButton();
+
+    let hideTimer;
+
+    window.addEventListener("scroll", () => {
+
+        updateProgress();
+
+        savePosition();
 
         updateStudyButton();
 
-    }
-);
+        if (!floatingProgress) return;
+
+        floatingProgress.classList.add("show");
+
+        clearTimeout(hideTimer);
+
+        hideTimer = setTimeout(() => {
+
+            floatingProgress.classList.remove("show");
+
+        }, 1200);
+
+    });
+
+});
